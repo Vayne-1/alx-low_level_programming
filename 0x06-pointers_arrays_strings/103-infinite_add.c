@@ -1,60 +1,101 @@
 #include "main.h"
-
 /**
-* infinite_add - C function that adds two numbers stored
-*in strings to a buffer.
-*Assumes that strings are never empty and
-*that numbers will always be positive, or 0.
-*Assumes there are only digits stored in the number strings.
-*If result can be stored in the buffer,
-*returns a pointer to the result.
-*If result cannot be stored in the buffer, returns `0`.
-*@n1:first number to be added
-*@n2:second number to be added
-*@r: store result
-*@size_r: size of buffer
-*Return:returns pointer to result
-*/
-
-char *infinite_add(char *n1, char *n2, char *r, int size_r)
+ * adding - Calculation methoud
+ * @i: incremental
+ * @temp: temproray
+ * @n1: pointer for the first 1
+ * @n2: pointer for the first 2
+ * @n1Len: length of n1
+ * @n2Len: length of n2
+ * @size_r: size of buffer
+ * @r: pointer for the buffer
+ * Return: the buffer pointer
+ */
+char *adding(int i, int temp, char *n1, char *n2,
+			 int n1Len, int n2Len, int size_r, char *r)
 {
+	for (i = i - 1; i >= 0 || temp != 0; i--)
+	{
+
+		if (n1Len >= 0)
+		{
+
+			temp += (n1[n1Len] - '0');
+			n1Len--;
+		}
+		if (n2Len >= 0)
+		{
+
+			temp += (n2[n2Len] - '0');
+			n2Len--;
+		}
+
+		r[i] = temp % 10 + '0';
+
+		temp /= 10;
+		if (i == 0 && temp)
+		{
+			int j = 0;
+
+			while (r[j] != '\0')
+				j++;
+			if (j + 2 > size_r)
+				return (0);
+			while (j >= 0)
+			{
+				r[j + 1] = r[j];
+				j--;
+			}
+			i++;
+		}
+	}
+	return (r);
 }
 
 /**
-* add_strings - Adds the numbers stored in two strings.
-* @n1: The string containing the first number to be added.
-* @n2: The string containing the second number to be added.
-* @r: The buffer to store the result.
-* @r_index: The current index of the buffer.
-*
-* Return: If r can store the sum - a pointer to the result.
-*         If r cannot store the sum - 0.
-*/
+ * infinite_add - Calculates the sum of two numbers
+ * @n1: pointer for the first number
+ * @n2: pointer for the second number
+ * @r: pointer for the bufer
+ * @size_r: size of the bufer
+ * Return: the string pinter
+ * Ashraf Atef
+ */
 
-char *add_strings(char *n1, char *n2, char *r, int r_index)
+char *infinite_add(char *n1, char *n2, char *r, int size_r)
 {
-	int num, tens = 0;
+	int n1Len = 0;
+	int n2Len = 0;
+	int temp = 0;
+	int i = 0;
 
-	for (; *n1 && *n2; n1--, n2--, r_index--)
+	while ((n1[n1Len] >= '0' && n1[n1Len] <= '9') ||
+		   (n2[n2Len] >= '0' && n2[n2Len] <= '9'))
 	{
-		num = (*n1 - '0') + (*n2 - '0');
-		num += tens;
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
+		if (n1[n1Len] >= '0' && n1[n1Len] <= '9')
+			n1Len++;
+		if (n2[n2Len] >= '0' && n2[n2Len] <= '9')
+			n2Len++;
 	}
 
-	for (; *n1; n1--; r_index++)
+	if (n1Len > size_r - 1 || n2Len > size_r - 1)
 	{
-		num = *(n1 - '0') + tens; 
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10;
+		return (0);
 	}
+	if (n1Len > n2Len)
+	{
+		i = n1Len;
+	}
+	else
+	{
+		i = n1Len;
+	}
+	if (n1Len)
+		n1Len--;
+	if (n2Len)
+		n2Len--;
 
-	for (; *n2; n2--;  r_index--)
-	{
-		num = (*n2 - '0') + tens; 
-		*(r + r_index) = (num % 10) + '0';
-		tens = num / 10; 
-	}
-	
+	r[i] = '\0';
+
+	return (adding(i, temp, n1, n2, n1Len, n2Len, size_r, r));
 }
